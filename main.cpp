@@ -21,6 +21,7 @@
 void exibeMenu(); 
 void desconectar();
 void verCompromissos();
+void editarCompromisso();
 void mostrarErroDoMysql();
 void adicionarCompromisso();
 
@@ -77,8 +78,7 @@ int main(int argc, char **argv) {
 				verCompromissos();
 				break;
 			case EDITAR_COMPROMISSO:
-				// TODO implementar
-				std::cout << "Falta implementar." << std::endl;
+				editarCompromisso();
 				break;
 		}
 
@@ -121,7 +121,7 @@ bool conectar() {
 	if (conectado) return true;
 
 	connexao = mysql_init(NULL);
-	if (!mysql_real_connect(connexao, "127.0.0.1", "root", "1234", "Agenda", 3306, NULL, 0)) {
+	if (!mysql_real_connect(connexao, "127.0.0.1", "root", "1234", "agenda", 3306, NULL, 0)) {
 		mostrarErroDoMysql(connexao);
 
 		conectado = false;
@@ -220,4 +220,59 @@ void verCompromissos() {
 		mostrarErroDoMysql(connexao);
 		std::cout << "Falha ao recuperar os registros!" << std::endl;
 	}
+}
+
+void editarCompromisso() {
+	
+	//Variaveis utilizadas
+	std::string dia, mes, ano, adicionar, descricao, codigo;
+	
+	//Pergunta o compromisso que quer alterar
+	std::cout << "Qual a data do compromisso que deseja alterar?" << std::endl;
+	
+	//Pergunta o Dia, Mes e Ano
+	std::cout << "Dia:";
+	std::cin >> dia;
+	std::cout << "Mes:";
+	std::cin >> mes;
+	std::cout << "Ano:";
+	std::cin >> ano;
+
+	//Pede para informar a nova data
+	std::cout << "Informe a nova data do compromisso." << std::endl;
+	std::cout << "Dia:";
+	std::cin >> dia;
+	std::cout << "Mes:";
+	std::cin >> mes;
+	std::cout << "Ano:";
+	std::cin >> ano;
+
+		//Pergunta se quer adicionar/editar a descricao do compromisso
+		std::cout << "Deseja adicionar/edita a descricao do compromisso? (S/N)";
+		std::cin >> adicionar;
+			if(adicionar == "S" || adicionar == "s"){
+			std::cout << "Descricao:";
+			std::cin >> descricao;
+		}else{
+
+
+	//Mostra a Query
+	std::string sql = "Update Compromisso set data =" + ano + "-" + mes + "-" + dia + ", descricao = " + descricao + " where cod = " + codigo;
+	
+	//Executa a Query
+	int statusDeExecucao = mysql_query(connexao,sql.data());
+	
+	//Verifica se está tudo certo
+ 	if (statusDeExecucao == 0){
+ 		
+ 		//Esta tudo certo!
+ 		std::cout << "O compromisso foi editado!";
+	 
+	 }else {
+		//Algo deu errado
+		mostrarErroDoMysql(connexao);
+		std::cout << "Erro ao editar o compromisso!";
+	}
+
+}
 }
